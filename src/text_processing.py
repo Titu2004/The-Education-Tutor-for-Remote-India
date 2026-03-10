@@ -24,6 +24,7 @@ def chunk_text(text, chunk_size=500):
 
         chunk = " ".join(words[i:i + chunk_size])
         chunks.append(chunk)
+        print(chunks);
 
     return chunks
 

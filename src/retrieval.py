@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from context_compression import compress_chunks
+from LLM import generate_response
 
 # load embedding model
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -37,7 +38,7 @@ def generate_answer(question):
     context = compress_chunks(question, retrieved_chunks)
 
     print("Generating answer...")
-
+    
     answer = f"""
 Context:
 {context}
@@ -47,7 +48,8 @@ Question:
 
 Answer:
 """
-
+    answer = generate_response(answer)
+    
     return answer
 
     

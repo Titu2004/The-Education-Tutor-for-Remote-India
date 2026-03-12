@@ -1,4 +1,5 @@
 import streamlit as st
+from tutor_llm import generate_answer
 
 # Page configuration
 st.set_page_config(page_title="PDF Q&A App", layout="wide")
@@ -36,10 +37,8 @@ if submit:
         st.warning("Please enter a question.")
     else:
         # Placeholder for backend response
-        st.info("Processing your question...")
-
-        # Dummy response (frontend placeholder)
-        answer = "This is where the answer from the backend will appear."
+        with st.spinner("Processing your question..."):
+            answer = generate_answer(question)
 
         st.subheader("Answer")
         st.write(answer)

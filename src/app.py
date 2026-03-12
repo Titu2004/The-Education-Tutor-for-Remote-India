@@ -1,5 +1,5 @@
 import streamlit as st
-from tutor_llm import generate_answer
+from retrieval import generate_answer
 
 # Page configuration
 st.set_page_config(page_title="PDF Q&A App", layout="wide")

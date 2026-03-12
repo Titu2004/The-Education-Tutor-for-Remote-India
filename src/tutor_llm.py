@@ -2,7 +2,7 @@ import faiss
 import pickle
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from compression import compress_chunks
+from context_compression import compress_chunks
 
 # load embedding model
 model = SentenceTransformer("all-MiniLM-L6-v2")

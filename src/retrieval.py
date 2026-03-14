@@ -1,22 +1,34 @@
 import faiss
-import pickle
 import numpy as np
+import streamlit as st
 from sentence_transformers import SentenceTransformer
 from context_compression import compress_chunks
 from LLM import generate_response
 
-# load embedding model
-model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# load vector database
-index = faiss.read_index("vector_store/textbook_vectors.index")
-
-# load chunks
-with open("vector_store/chunks.pkl", "rb") as f:
-    chunks = pickle.load(f)
+@st.cache_resource
+def load_embedding_model():
+    """Load embedding model once and cache it."""
+    return SentenceTransformer("all-MiniLM-L6-v2")
 
 
-def retrieve_chunks(question, k=5):
+model = load_embedding_model()
+
+
+def create_vector_store(chunks):
+
+    embeddings = model.encode(chunks).astype("float32")
+
+    dimension = embeddings.shape[1]
+
+    index = faiss.IndexFlatL2(dimension)
+
+    index.add(embeddings)
+
+    return index
+
+
+def retrieve_chunks(question, index, chunks, k=5):
 
     query_vector = model.encode([question]).astype("float32")
 
@@ -27,19 +39,13 @@ def retrieve_chunks(question, k=5):
     return retrieved
 
 
-def generate_answer(question):
+def generate_answer(question, index, chunks):
 
-    print("Retrieving chunks...")
-
-    retrieved_chunks = retrieve_chunks(question)
-
-    print("Compressing chunks...")
+    retrieved_chunks = retrieve_chunks(question, index, chunks)
 
     context = compress_chunks(question, retrieved_chunks)
 
-    print("Generating answer...")
-    
-    answer = f"""
+    prompt = f"""
 Context:
 {context}
 
@@ -48,8 +54,9 @@ Question:
 
 Answer:
 """
-    answer = generate_response(answer)
-    
+
+    answer = generate_response(prompt)
+
     return answer
 
     

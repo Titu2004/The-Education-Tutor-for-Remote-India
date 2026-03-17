@@ -1,6 +1,7 @@
 import faiss
 import numpy as np
 import streamlit as st
+import time
 from sentence_transformers import SentenceTransformer
 from context_compression import compress_chunks
 from LLM import generate_response
@@ -40,10 +41,18 @@ def retrieve_chunks(question, index, chunks, k=5):
 
 
 def generate_answer(question, index, chunks):
-
+    timing = {}
+    total_start = time.time()
+    
+    # Step 1: Retrieve chunks
+    retrieval_start = time.time()
     retrieved_chunks = retrieve_chunks(question, index, chunks)
-
+    timing["retrieval"] = time.time() - retrieval_start
+    
+    # Step 2: Compress/filter chunks
+    compression_start = time.time()
     context = compress_chunks(question, retrieved_chunks)
+    timing["compression"] = time.time() - compression_start
 
     prompt = f"""
 Context:
@@ -55,8 +64,13 @@ Question:
 Answer:
 """
 
+    # Step 3: Generate response from LLM
+    llm_start = time.time()
     answer = generate_response(prompt)
-
-    return answer
+    timing["llm"] = time.time() - llm_start
+    
+    timing["total"] = time.time() - total_start
+    
+    return answer, timing
 
     

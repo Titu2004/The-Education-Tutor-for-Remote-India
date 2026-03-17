@@ -193,10 +193,10 @@ h3 {
 }
 [data-testid="stChatInputSubmitButton"] button[data-testid="baseButton-primary"],
 [data-testid="stChatInputSubmitButton"] button:not([disabled]):not([aria-disabled="true"]) {
-    background: #1d6cf0 !important;
+    background: #007bff !important;
 }
 [data-testid="stChatInputSubmitButton"] button:not([disabled]):not([aria-disabled="true"]):hover {
-    background: #3d82f5 !important;
+    background: #0056b3 !important;
     transform: translateY(-1px) !important;
 }
 
@@ -329,11 +329,21 @@ if question:
         st.session_state["messages"].append({"role": "user", "text": question.strip()})
 
         with st.spinner("Thinking…"):
-            answer = generate_answer(
+            answer, timing = generate_answer(
                 question,
                 st.session_state["index"],
                 st.session_state["chunks"],
             )
 
-        st.session_state["messages"].append({"role": "ai", "text": answer})
+        # Format timing information
+        timing_text = (
+            f"**⏱ Response time:** {timing['total']:.2f}s | "
+            f"Retrieval: {timing['retrieval']:.2f}s | "
+            f"Compression: {timing['compression']:.2f}s | "
+            f"LLM: {timing['llm']:.2f}s"
+        )
+        
+        answer_with_timing = f"{answer}\n\n<div style='font-size:0.75rem;color:#3a3f55;margin-top:1rem;'>{timing_text}</div>"
+
+        st.session_state["messages"].append({"role": "ai", "text": answer_with_timing})
         st.rerun()

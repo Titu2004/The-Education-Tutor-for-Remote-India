@@ -19,4 +19,7 @@ def compress_chunks(question, chunks, max_chunks=3):
     # limit context size
     compressed_context = " ".join(relevant_chunks[:max_chunks])
 
+    print(f"🗜️  Compression - Processed {len(chunks)} chunks, found {len(relevant_chunks)} relevant, "
+          f"using {min(len(relevant_chunks), max_chunks)} in context")
+
     return compressed_context

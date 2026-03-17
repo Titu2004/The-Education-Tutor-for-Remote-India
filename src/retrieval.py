@@ -37,6 +37,8 @@ def retrieve_chunks(question, index, chunks, k=5):
 
     retrieved = [chunks[i] for i in I[0]]
 
+    print(f"🔍 Retrieval - Searched {len(chunks)} total chunks, retrieved {len(retrieved)} relevant chunks")
+
     return retrieved
 
 
@@ -70,6 +72,8 @@ Answer:
     timing["llm"] = time.time() - llm_start
     
     timing["total"] = time.time() - total_start
+    
+    print(f"📊 Question Processing Complete - Total time: {timing['total']:.2f}s")
     
     return answer, timing
 

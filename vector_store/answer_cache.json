@@ -1,0 +1,19 @@
+{
+  "0897b9824a642bf705a23c835b931db4": {
+    "answer": "Tricki is a small dog who is pampered and overfed by his rich mistress, Mrs Pumphrey. He is described as a \"little golden figure\" who had become \"hugely fat, like a bloated sausage\" due to overindulgence, but was later transformed into a \"lithe, hard-muscled animal.\"",
+    "metrics": {
+      "retrieval_time_ms": 57.9,
+      "compression_time_ms": 0.1,
+      "llm_time_ms": 4397.3,
+      "total_time_ms": 4455.4,
+      "chunks_scanned": 4,
+      "chunks_retrieved": 5,
+      "chunks_after_compress": 3,
+      "accuracy_pct": 45.4,
+      "epochs": 1,
+      "from_cache": false,
+      "best_similarity": 31.7
+    },
+    "cached_at": "2026-03-18 01:48:08"
+  }
+}

@@ -1,0 +1,28 @@
+[global]
+
+# If false, makes your Streamlit script run as a module.
+developmentMode = false
+
+# Allows you to type a variable or string by itself in a single line of Python code to write it to the app.
+dataFrameSerialization = "legacy"
+
+[theme]
+
+# The preset Streamlit theme that your custom theme inherits from.
+# One of "light" or "dark".
+base = "dark"
+
+# Primary accent color for interactive elements.
+primaryColor = "#2f4de0"
+
+# Background color for the main content area.
+backgroundColor = "#0d0f14"
+
+# Background color for sidebar and most interactive widgets.
+secondaryBackgroundColor = "#13151c"
+
+# Color used for almost all text.
+textColor = "#e8ecf5"
+
+# Font family for all text in the app, except code blocks. One of "sans serif", "serif", or "monospace".
+font = "sans serif"

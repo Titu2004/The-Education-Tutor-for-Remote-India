@@ -39,3 +39,8 @@ def set(question: str, pdf_name: str, answer: str, metrics: dict) -> None:
 
 def stats() -> dict:
     return {"total_entries": len(_load())}
+
+
+def clear() -> None:
+    """Clear all cached answers."""
+    _save({})

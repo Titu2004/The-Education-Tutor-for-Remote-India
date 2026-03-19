@@ -50,13 +50,63 @@ def fmt_ms(ms: float) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 # Page config + CSS
 # ─────────────────────────────────────────────────────────────────────────────
-st.set_page_config(page_title="EduTutor", layout="wide", page_icon="📚")
+st.set_page_config(
+    page_title="EduTutor",
+    layout="wide",
+    page_icon="📚",
+    initial_sidebar_state="expanded"  # Keep sidebar expanded by default
+)
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; }
+
+/* Force sidebar to always be visible and block collapse behavior */
+.st-emotion-cache-18ni7ap, /* Sidebar wrapper */
+.st-emotion-cache-vk3wp9, /* Alternative sidebar class */
+section[data-testid="stSidebar"] {
+    display: flex !important;
+    visibility: visible !important;
+    width: 340px !important;
+    min-width: 340px !important;
+    max-width: 340px !important;
+    position: relative !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+/* Hide all collapse/toggle buttons */
+button[aria-label="Close sidebar"],
+button[aria-label="Open sidebar"],
+button[aria-label="Toggle sidebar"],
+button[aria-label="Collapse sidebar"],
+[data-testid="collapseSidebarButton"],
+.st-emotion-cache-1kyxreq > button,
+header > * button:first-child,
+nav button {
+    display: none !important;
+}
+
+/* Ensure sidebar is never hidden by state */
+body.sidebar-closed [data-testid="stSidebar"],
+body.sidebar-closed section[data-testid="stSidebar"],
+[data-testid="stSidebar"][style*="display: none"],
+[data-testid="stSidebar"][style*="left: -"],
+[data-testid="stSidebar"][style*="transform: translate"] {
+    display: flex !important;
+    visibility: visible !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 340px !important;
+}
+
+/* Main app container - ensure it accounts for sidebar */
+[data-testid="stAppViewContainer"] {
+    margin-left: 0 !important;
+}
+
 html, body, [data-testid="stAppViewContainer"] {
     background: #0d0f14 !important; font-family: 'DM Sans', sans-serif;
 }
@@ -131,7 +181,216 @@ h3 { color: #8892aa !important; font-size: 0.72rem !important; font-weight: 500 
     background: #1d6cf0 !important; border-radius: 10px !important;
 }
 hr { border-color: #1e2130 !important; }
+
+/* ═════════════════════════════════════════════════════════════════════════════ */
+/* LIGHT MODE SUPPORT - Automatic detection and proper contrast */
+/* ═════════════════════════════════════════════════════════════════════════════ */
+@media (prefers-color-scheme: light) {
+    html, body, [data-testid="stAppViewContainer"] {
+        background: #f8f9fa !important; color: #1a1a1a !important;
+    }
+    
+    [data-testid="stSidebar"] {
+        background: #ffffff !important; border-right: 1px solid #e5e7eb !important;
+    }
+    
+    [data-testid="stSidebar"] * { color: #374151 !important; }
+    
+    [data-testid="stSidebar"] button { color: #1f2937 !important; }
+    
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+        color: #1f2937 !important; font-weight: 600; letter-spacing: -0.02em;
+    }
+    
+    [data-testid="stMainBlockContainer"] {
+        padding: 2rem 2.5rem 140px !important; max-width: 860px !important; margin: 0 auto !important;
+    }
+    
+    h1 { color: #1f2937 !important; font-size: 1.6rem !important; font-weight: 600 !important;
+         letter-spacing: -0.03em !important; margin-bottom: 0.25rem !important; }
+    
+    h3 { color: #6b7280 !important; font-size: 0.72rem !important; font-weight: 500 !important;
+         letter-spacing: 0.12em !important; text-transform: uppercase !important;
+         margin: 1.8rem 0 0.8rem !important; }
+    
+    [data-testid="stFileUploader"] {
+        background: #f5f7fa !important; border: 1.5px dashed #d1d5db !important;
+        border-radius: 12px !important; padding: 8px !important;
+    }
+    
+    .bubble-user { background: #3b82f6; color: #ffffff; align-self: flex-end;
+                   border-bottom-right-radius: 5px; box-shadow: 0 4px 20px rgba(59,130,246,.25); }
+    
+    .bubble-ai   { background: #f3f4f6; color: #1f2937; align-self: flex-start;
+                   border-bottom-left-radius: 5px; border: 1px solid #e5e7eb; }
+    
+    .bubble-oob  { background: #fdf2f8; color: #ec4899; align-self: flex-start;
+                   border-bottom-left-radius: 5px; border: 1px solid #f5d4e6; }
+    
+    .bubble-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+                    text-transform: uppercase; margin-bottom: 5px; opacity: 0.6; color: #6b7280; }
+    
+    .metrics-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    
+    .metric-pill { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
+                   padding: 4px 10px; font-size: 0.7rem; color: #6b7280; font-family: 'DM Mono', monospace; }
+    
+    .metric-pill b { color: #374151; }
+    
+    .cache-badge { display: inline-block; background: #ecfdf5; border: 1px solid #10b981;
+                   border-radius: 6px; padding: 2px 8px; font-size: 0.68rem; color: #059669;
+                   margin-left: 6px; vertical-align: middle; }
+    
+    .empty-state { text-align: center; padding: 3rem 1rem; color: #9ca3af; }
+    
+    .empty-state .icon { font-size: 2.8rem; margin-bottom: 0.6rem; }
+    
+    .empty-state p { font-size: 0.88rem; line-height: 1.6; color: #6b7280; }
+    
+    [data-testid="stBottom"] {
+        background: #f8f9fa !important; border-top: 1px solid #e5e7eb !important;
+        padding: 14px 2.5rem 18px !important;
+    }
+    
+    [data-testid="stChatInput"] textarea {
+        background: #ffffff !important; border: 1px solid #d1d5db !important;
+        border-radius: 16px !important; color: #1f2937 !important;
+        font-family: 'DM Sans', sans-serif !important; font-size: 0.95rem !important;
+        padding: 14px 18px !important; box-shadow: none !important; resize: none !important;
+    }
+    
+    [data-testid="stChatInput"] textarea::placeholder { color: #9ca3af !important; }
+    
+    [data-testid="stChatInput"] textarea:focus {
+        border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59,130,246,.15) !important;
+    }
+    
+    [data-testid="stChatInputSubmitButton"] button:not([disabled]):not([aria-disabled="true"]) {
+        background: #3b82f6 !important; border-radius: 10px !important; color: #ffffff !important;
+    }
+    
+    hr { border-color: #e5e7eb !important; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════ */
+/* SIDEBAR FIXES - Make sidebar permanently visible and disable collapse */
+/* ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Force sidebar visibility in all states */
+[data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    width: 340px !important;
+    min-width: 340px !important;
+    max-width: 340px !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    z-index: 100 !important;
+    transition: none !important;
+}
+
+/* Override collapsed state */
+section[data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    width: 340px !important;
+    min-width: 340px !important;
+}
+
+/* Hide all collapse/expand mechanisms */
+button[aria-label*="sidebar"],
+button[aria-label*="Sidebar"],
+button[aria-label*="Close"],
+button[aria-label*="Open"],
+button[aria-label*="Toggle"],
+[data-testid="collapseSidebarButton"],
+[data-testid="stSidebar"] ~ button,
+header button:first-of-type,
+.st-emotion-cache-1kyxreq button,
+nav button {
+    display: none !important;
+}
+
+/* Prevent any animation that could hide the sidebar */
+[data-testid="stSidebar"],
+section[data-testid="stSidebar"],
+.st-emotion-cache-18ni7ap,
+.st-emotion-cache-vk3wp9 {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Ensure layout uses flexbox and sidebar stays visible */
+.stApp {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.stApp > section:first-of-type {
+    display: block !important;
+}
+
+/* Prevent sidebar from being pushed off-screen */
+@media (max-width: 1024px) {
+    [data-testid="stSidebar"] {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        width: 340px !important;
+        z-index: 999999 !important;
+    }
+    
+    [data-testid="stMainBlockContainer"] {
+        margin-left: 340px !important;
+    }
+}
 </style>
+<script>
+// Prevent sidebar from collapsing - Active monitoring and enforcement
+(function() {
+    const preventCollapse = () => {
+        // Find sidebar element
+        const sidebar = document.querySelector('[data-testid="stSidebar"]') || 
+                       document.querySelector('section[data-testid="stSidebar"]');
+        
+        if (sidebar) {
+            // Force visibility
+            sidebar.style.display = 'block';
+            sidebar.style.visibility = 'visible';
+            sidebar.style.width = '340px';
+            sidebar.style.left = '0';
+            sidebar.style.position = 'relative';
+            sidebar.style.transform = 'none';
+            sidebar.style.opacity = '1';
+        }
+        
+        // Hide collapse buttons
+        const buttons = document.querySelectorAll('button[aria-label*="sidebar"], button[aria-label*="Sidebar"], button[aria-label*="Close"], button[aria-label*="Open"], button[aria-label*="Toggle"]');
+        buttons.forEach(btn => btn.style.display = 'none');
+    };
+    
+    // Run immediately
+    preventCollapse();
+    
+    // Run periodically to counter any dynamic changes
+    setInterval(preventCollapse, 500);
+    
+    // Also watch for attribute/style changes
+    const sidebar = document.querySelector('[data-testid="stSidebar"]');
+    if (sidebar) {
+        const observer = new MutationObserver(preventCollapse);
+        observer.observe(sidebar, {
+            attributes: true,
+            attributeFilter: ['style', 'class', 'aria-expanded'],
+            subtree: false
+        });
+    }
+})();
+</script>
 """, unsafe_allow_html=True)
 
 
@@ -284,18 +543,23 @@ with st.sidebar:
             st.session_state["messages"] = []
             st.rerun()
     with col2:
-        if st.button("🔄 Reload", use_container_width=True):
-            try:
-                index, chunks = load_vector_store()
-                st.session_state.update({
-                    "index": index, "chunks": chunks,
-                    "page_map": {}, "pdf_images": [],
-                    "source_label": f"📚 Pre-loaded textbook ({len(chunks)} chunks)",
-                    "uploaded_filename": None, "messages": [],
-                })
-                st.rerun()
-            except FileNotFoundError as e:
-                st.error(str(e))
+        if st.button("� Clear cache", use_container_width=True):
+            answer_cache.clear()
+            st.success("✅ Cache cleared!")
+            st.rerun()
+
+    if st.button("🔄 Reload", use_container_width=True):
+        try:
+            index, chunks = load_vector_store()
+            st.session_state.update({
+                "index": index, "chunks": chunks,
+                "page_map": {}, "pdf_images": [],
+                "source_label": f"📚 Pre-loaded textbook ({len(chunks)} chunks)",
+                "uploaded_filename": None, "messages": [],
+            })
+            st.rerun()
+        except FileNotFoundError as e:
+            st.error(str(e))
 
 
 # ─────────────────────────────────────────────────────────────────────────────

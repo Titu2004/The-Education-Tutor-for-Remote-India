@@ -1,22 +1,28 @@
-def compress_chunks(question, chunks, max_chunks=3):
-    """
-    Selects the most relevant chunks based on keywords in the question
-    and returns a compressed context.
-    """
+from __future__ import annotations
 
-    keywords = question.lower().split()
 
-    relevant_chunks = []
+def compress_chunks(question: str, chunks: list, max_chunks: int = 3, return_count: bool = False):
+    """
+    Select most relevant chunks by keyword overlap with the question.
+    If return_count=True, returns (context_str, n_chunks_used).
+    """
+    def get_text(chunk) -> str:
+        return chunk["content"] if isinstance(chunk, dict) else chunk
+
+    keywords = set(w for w in question.lower().split() if len(w) > 2)
+    scored   = []
 
     for chunk in chunks:
-        chunk_lower = chunk.lower()
+        text  = get_text(chunk)
+        score = sum(1 for kw in keywords if kw in text.lower())
+        if score > 0:
+            scored.append((score, text))
 
-        for word in keywords:
-            if word in chunk_lower:
-                relevant_chunks.append(chunk)
-                break
+    scored.sort(key=lambda x: x[0], reverse=True)
+    top_texts = [t for _, t in scored[:max_chunks]]
 
-    # limit context size
-    compressed_context = " ".join(relevant_chunks[:max_chunks])
+    if not top_texts:
+        top_texts = [get_text(c) for c in chunks[:max_chunks]]
 
-    return compressed_context
+    context = "\n\n".join(top_texts)
+    return (context, len(top_texts)) if return_count else context

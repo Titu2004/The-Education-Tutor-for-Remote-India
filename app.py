@@ -544,9 +544,12 @@ with st.sidebar:
             st.rerun()
     with col2:
         if st.button("� Clear cache", use_container_width=True):
-            answer_cache.clear()
-            st.success("✅ Cache cleared!")
-            st.rerun()
+            try:
+                answer_cache.clear()
+                st.success("✅ Cache cleared!")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error clearing cache: {str(e)}")
 
     if st.button("🔄 Reload", use_container_width=True):
         try:

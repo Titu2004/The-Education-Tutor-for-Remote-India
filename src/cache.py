@@ -5,19 +5,25 @@ CACHE_PATH = "vector_store/answer_cache.json"
 
 
 def _load() -> dict:
+    """Load cache from file, handling missing or corrupted files gracefully."""
     if os.path.exists(CACHE_PATH):
         try:
             with open(CACHE_PATH, "r") as f:
                 return json.load(f)
-        except Exception:
+        except Exception as e:
+            print(f"Warning: Could not load cache file: {e}")
             return {}
     return {}
 
 
 def _save(cache: dict) -> None:
-    os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
-    with open(CACHE_PATH, "w") as f:
-        json.dump(cache, f, indent=2)
+    """Save cache to file, creating directory if needed."""
+    try:
+        os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
+        with open(CACHE_PATH, "w") as f:
+            json.dump(cache, f, indent=2)
+    except Exception as e:
+        print(f"Warning: Could not save cache file: {e}")
 
 
 def _key(question: str, pdf_name: str) -> str:
@@ -43,4 +49,8 @@ def stats() -> dict:
 
 def clear() -> None:
     """Clear all cached answers."""
-    _save({})
+    try:
+        _save({})
+    except Exception as e:
+        print(f"Error clearing cache: {e}")
+        raise

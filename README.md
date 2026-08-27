@@ -287,6 +287,8 @@ The system tracks:
 - [ ] Export study materials & practice questions
 
 ---
+## Deployed Link
+https://education-tutor-minekraft.streamlit.app/
 
 ## Contact
 
